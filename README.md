@@ -13,7 +13,7 @@
 
 ### 1. Клонирование репозитория
 ```bash
-git clone https://github.com/ВАШ_ЛОГИН/notification-service.git
+git clone https://github.com/AidarMukhitov/notification-service
 cd notification-service
 ```
 
