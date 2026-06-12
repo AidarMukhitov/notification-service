@@ -1,0 +1,123 @@
+{
+  "info": {
+    "name": "Notification Service API",
+    "description": "Микросервис для массовой рассылки SMS/Email уведомлений",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "health"]
+        },
+        "description": "Проверка работоспособности сервиса"
+      },
+      "response": []
+    },
+    {
+      "name": "Массовая рассылка (транзакционная)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"channel\": \"sms\",\n    \"message\": \"Ваш код подтверждения: 123456\",\n    \"recipient_ids\": [\"+79001234567\", \"+79007654321\"],\n    \"priority\": \"transactional\",\n    \"idempotency_key\": \"order-123-verification\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/broadcast",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "broadcast"]
+        },
+        "description": "Отправка транзакционных уведомлений (высокий приоритет)"
+      },
+      "response": []
+    },
+    {
+      "name": "Массовая рассылка (маркетинговая)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"channel\": \"email\",\n    \"message\": \"Скидка 20% на все поездки! Промокод: SPRING20\",\n    \"recipient_ids\": [\"client@example.com\", \"partner@example.com\"],\n    \"priority\": \"marketing\",\n    \"idempotency_key\": \"promo-spring-2025\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/broadcast",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "broadcast"]
+        },
+        "description": "Отправка маркетинговых уведомлений (низкий приоритет)"
+      },
+      "response": []
+    },
+    {
+      "name": "История уведомлений",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/subscribers/+79001234567/notifications",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "subscribers", "+79001234567", "notifications"]
+        },
+        "description": "Получение истории и статусов всех уведомлений подписчика"
+      },
+      "response": []
+    },
+    {
+      "name": "Дедупликация (тест повторного запроса)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"channel\": \"sms\",\n    \"message\": \"Дубликат не должен отправиться\",\n    \"recipient_ids\": [\"test_user\"],\n    \"priority\": \"transactional\",\n    \"idempotency_key\": \"test-duplicate-key\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/broadcast",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "broadcast"]
+        },
+        "description": "Отправьте этот запрос дважды — второй должен вернуть ошибку 409"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
